@@ -2,15 +2,17 @@ package com.avenau.ifjson.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class IfCondition {
+import java.util.HashMap;
+
+public class IfConditionWrapper {
 
     @JsonProperty("condition")
     private Condition condition;
 
-    public IfCondition(){
+    public IfConditionWrapper(){
 
     }
-    public IfCondition(Condition condition){
+    public IfConditionWrapper(Condition condition){
         this.condition = condition;
     }
 
@@ -18,8 +20,8 @@ public class IfCondition {
         return this.condition;
     }
 
-    public boolean evaluate() {
-        return condition.evaluate();
+    public boolean evaluate(HashMap<String,String> variableReplacement) throws Exception {
+        return condition.evaluate(variableReplacement);
     }
     public void print(){
         System.out.println("====== Printing IfCondition ============");

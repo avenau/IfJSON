@@ -1,23 +1,25 @@
 package com.avenau.ifjson.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class Statement {
-    @JsonProperty("value")
-    private String value;
+import java.util.HashMap;
 
-    public Statement (String value){
-        this.value = value;
-    }
-    public Statement () {
-        this.value = "";
-    }
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ResultStatement.class, name = "ResultStatement"),
+        @JsonSubTypes.Type(value = IfStatement.class, name = "IfStatement")
+})
+public interface Statement {
 
-    public String evaluate() {
-        return this.value;
-    }
 
-    public void print(){
-        System.out.println("Statement:{ " + "Value: " + value + " }");
-    }
+
+
+    public String evaluate(HashMap<String, String> variableReplacements) throws Exception;
+
+    public void print();
 }

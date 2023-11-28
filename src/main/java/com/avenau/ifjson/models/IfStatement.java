@@ -1,19 +1,26 @@
 package com.avenau.ifjson.models;
 
-public class IfStatement {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private IfCondition ifCondition;
+import java.util.HashMap;
+
+public class IfStatement implements Statement{
+
+    @JsonProperty("ifCondition")
+    private IfConditionWrapper ifConditionWrapper;
+    @JsonProperty("trueStatement")
     private Statement trueStatement;
+    @JsonProperty("falseStatement")
     private Statement falseStatement;
 
     public IfStatement () {
 
     }
 
-    public IfStatement (Statement trueStatement, Statement falseStatement, IfCondition ifCondition){
+    public IfStatement (Statement trueStatement, Statement falseStatement, IfConditionWrapper ifConditionWrapper){
         this.trueStatement = trueStatement;
         this.falseStatement = falseStatement;
-        this.ifCondition = ifCondition;
+        this.ifConditionWrapper = ifConditionWrapper;
     }
 
     public Statement getFalseStatement() {
@@ -24,14 +31,22 @@ public class IfStatement {
         return trueStatement;
     }
 
-    public IfCondition getIfCondition() {
-        return ifCondition;
+    public IfConditionWrapper getIfCondition() {
+        return ifConditionWrapper;
+    }
+
+    @Override
+    public String evaluate(HashMap<String,String> variableReplacement) throws Exception {
+        if (ifConditionWrapper.evaluate(variableReplacement)){
+            return this.trueStatement.evaluate(variableReplacement);
+        }
+        return this.falseStatement.evaluate(variableReplacement);
     }
 
     public void print() {
         trueStatement.print();
         falseStatement.print();
-        ifCondition.print();
+        ifConditionWrapper.print();
     }
 
 

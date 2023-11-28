@@ -1,5 +1,7 @@
 package com.avenau.ifjson.models;
 
+import java.util.HashMap;
+
 public class AndCondition implements Condition{
 
     private Condition left;
@@ -11,11 +13,11 @@ public class AndCondition implements Condition{
     }
 
     public AndCondition (){
-
+        super();
     }
     @Override
-    public Boolean evaluate() {
-        return (left.evaluate() && right.evaluate());
+    public Boolean evaluate(HashMap<String,String> variableReplacement) throws Exception {
+        return (left.evaluate(variableReplacement) && right.evaluate(variableReplacement));
     }
 
     @Override

@@ -3,14 +3,18 @@ package com.avenau.ifjson.controllers;
 import com.avenau.ifjson.models.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/json")
@@ -21,11 +25,11 @@ public class Functions {
     @GetMapping("/test")
     @ResponseStatus(HttpStatus.OK)
     public String returnJSONTest() throws JsonProcessingException {
-        Statement trueStatement = new Statement("True");
-        Statement falseStatement = new Statement("False");
-        Condition greaterThan = new GreaterThan("A", 5);
-        IfCondition ifCondition = new IfCondition(greaterThan);
-        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifCondition);
+        Statement trueStatement = new ResultStatement("True");
+        Statement falseStatement = new ResultStatement("False");
+        Condition greaterThan = new GreaterThanCondition("A", "5");
+        IfConditionWrapper ifConditionWrapper = new IfConditionWrapper(greaterThan);
+        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifConditionWrapper);
         IfWrapper wrapper = new IfWrapper(ifStatement);
        /* PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType("Condition.")
@@ -44,13 +48,13 @@ public class Functions {
     @GetMapping("/test2")
     @ResponseStatus(HttpStatus.OK)
     public String test() throws JsonProcessingException {
-        Statement trueStatement = new Statement("True");
-        Statement falseStatement = new Statement("False");
-        Condition greaterThan1 = new GreaterThan("A", 5);
-        Condition greaterThan2 = new GreaterThan("B", 10);
+        Statement trueStatement = new ResultStatement("True");
+        Statement falseStatement = new ResultStatement("False");
+        Condition greaterThan1 = new GreaterThanCondition("A", "5");
+        Condition greaterThan2 = new GreaterThanCondition("B", "10");
         Condition AndCond = new AndCondition(greaterThan1,greaterThan2);
-        IfCondition ifCondition = new IfCondition(AndCond);
-        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifCondition);
+        IfConditionWrapper ifConditionWrapper = new IfConditionWrapper(AndCond);
+        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifConditionWrapper);
         IfWrapper wrapper = new IfWrapper(ifStatement);
        /* PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType("Condition.")
@@ -111,9 +115,9 @@ public class Functions {
         return json;
     }
 
-    @GetMapping("/evaluate")
+    @PostMapping("/evaluateTest")
     @ResponseStatus(HttpStatus.OK)
-    public String evaluateCurrentJSON() throws JsonProcessingException {
+    public String evaluateCurrentJSONTest() throws JsonProcessingException {
         if (currentJson == null) {
             return "{'Error': 'You have not loaded a JSON yet'}";
         }
@@ -128,6 +132,28 @@ public class Functions {
         String json = mapper.writeValueAsString(currentJson);
 
         return json;
+    }
+
+    @PostMapping("/evaluate")
+    @ResponseStatus(HttpStatus.OK)
+    public String evaluate(@RequestBody String jsonString) throws JsonProcessingException {
+
+        if (currentJson == null) {
+            return "{'Error': 'You have not loaded a JSON yet'}";
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, Object> input =  mapper.readValue(jsonString, HashMap.class);
+        HashMap<String,String> variables = new HashMap<String, String>();
+
+        for (String key : input.keySet()){
+            //System.out.println(key + ": " + input.get(key));
+            variables.put(key, String.valueOf(input.get(key)));
+        }
+        
+
+
+        return "Hi";
     }
 
 
