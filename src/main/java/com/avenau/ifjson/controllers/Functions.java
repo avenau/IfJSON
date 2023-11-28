@@ -75,7 +75,7 @@ public class Functions {
         System.out.println(jsonString);
 
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        IfWrapperDTO ifStatement =  mapper.readValue(jsonString, IfWrapperDTO.class);
+        IfWrapper ifStatement =  mapper.readValue(jsonString, IfWrapper.class);
 
         ifStatement.print();
 

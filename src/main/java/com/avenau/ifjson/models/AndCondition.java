@@ -17,4 +17,12 @@ public class AndCondition implements Condition{
     public Boolean execute() {
         return (left.execute() && right.execute());
     }
+
+    @Override
+    public void print() {
+        System.out.println("============ Printing AND Condition ==========");
+        this.left.print();
+        this.right.print();
+        System.out.println("======================");
+    }
 }

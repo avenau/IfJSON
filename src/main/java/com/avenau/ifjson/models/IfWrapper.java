@@ -7,7 +7,18 @@ public class IfWrapper {
     @JsonProperty("ifStatement")
     private IfStatement ifStatement;
 
+    public IfWrapper() {
+
+    }
     public IfWrapper(IfStatement ifStatement){
         this.ifStatement = ifStatement;
+    }
+
+    public IfStatement getIfStatement() {
+        return ifStatement;
+    }
+
+    public void print(){
+        ifStatement.print();
     }
 }

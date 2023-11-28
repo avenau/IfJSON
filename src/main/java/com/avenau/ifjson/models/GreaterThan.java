@@ -31,4 +31,10 @@ public class GreaterThan implements Condition{
 
         return (replacement > value);
     }
+
+    @Override
+    public void print() {
+        System.out.println("Condition:{ " + "Type: GreaterThan, " + "variable: " + this.variable + "Value: " + this.value + "variable: " + this.value + "}");
+
+    }
 }
