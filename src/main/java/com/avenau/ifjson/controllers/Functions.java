@@ -99,6 +99,33 @@ public class Functions {
         return json;
     }
 
+    @GetMapping("/test4")
+    @ResponseStatus(HttpStatus.OK)
+    public String test4() throws JsonProcessingException {
+        Statement trueStatement1 = new ResultStatement("True");
+        Statement falseStatement2 = new ResultStatement("False");
+        Statement falseStatement = new IfStatement(trueStatement1, falseStatement2, new IfConditionWrapper(new LessThanCondition("b", "10")));
+
+        Statement trueStatement = new ResultStatement("True");
+        Condition equals = new EqualsCondition("a", "abc");
+        Condition greaterThan = new GreaterThanCondition("b", "4");
+        Condition AndCond = new AndCondition(equals,greaterThan);
+        IfConditionWrapper ifConditionWrapper = new IfConditionWrapper(AndCond);
+        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifConditionWrapper);
+        IfWrapper wrapper = new IfWrapper(ifStatement);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String json = mapper.writeValueAsString(wrapper);
+
+
+
+        return json;
+    }
+
     @PostMapping("/recieveTest")
     @ResponseStatus(HttpStatus.OK)
     public String testRecieve(@RequestBody String jsonString) throws JsonProcessingException {

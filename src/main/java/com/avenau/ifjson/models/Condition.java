@@ -11,7 +11,11 @@ import java.util.HashMap;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AndCondition.class, name = "AND"),
-        @JsonSubTypes.Type(value = GreaterThanCondition.class, name = "GreaterThan")
+        @JsonSubTypes.Type(value = OrCondition.class, name = "OR"),
+        @JsonSubTypes.Type(value = GreaterThanCondition.class, name = "GreaterThan"),
+        @JsonSubTypes.Type(value = LessThanCondition.class, name = "LessThan"),
+        @JsonSubTypes.Type(value = EqualsCondition.class, name = "Equals"),
+        @JsonSubTypes.Type(value = NotEqualsCondition.class, name = "NotEquals")
 })
 public interface Condition {
 
