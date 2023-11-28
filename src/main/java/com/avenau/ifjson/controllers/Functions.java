@@ -1,7 +1,5 @@
 package com.avenau.ifjson.controllers;
 
-
-import com.avenau.ifjson.dto.IfWrapperDTO;
 import com.avenau.ifjson.models.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -18,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 @RequestMapping(value = "/json")
 
 public class Functions {
+    private IfWrapper currentJson;
 
     @GetMapping("/test")
     @ResponseStatus(HttpStatus.OK)
@@ -80,6 +79,55 @@ public class Functions {
         ifStatement.print();
 
         return "test2";
+    }
+
+    @PostMapping("/insertJSON")
+    @ResponseStatus(HttpStatus.OK)
+    public void insertJSON(@RequestBody String jsonString) throws JsonProcessingException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(jsonString);
+
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        IfWrapper ifStatement =  mapper.readValue(jsonString, IfWrapper.class);
+
+        currentJson = ifStatement;
+    }
+
+    @GetMapping("/getCurrentJSON")
+    @ResponseStatus(HttpStatus.OK)
+    public String getCurrentJSON() throws JsonProcessingException {
+        if (currentJson == null){
+            return "{'Error': 'You have not loaded a JSON yet'}";
+        }
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String json = mapper.writeValueAsString(currentJson);
+
+        return json;
+    }
+
+    @GetMapping("/evaluate")
+    @ResponseStatus(HttpStatus.OK)
+    public String evaluateCurrentJSON() throws JsonProcessingException {
+        if (currentJson == null) {
+            return "{'Error': 'You have not loaded a JSON yet'}";
+        }
+
+
+
+
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String json = mapper.writeValueAsString(currentJson);
+
+        return json;
     }
 
 

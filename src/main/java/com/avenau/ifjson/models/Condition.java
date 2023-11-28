@@ -13,6 +13,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface Condition {
 
-    public Boolean execute();
+    public Boolean evaluate();
     public void print();
 }

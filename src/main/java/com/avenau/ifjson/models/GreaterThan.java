@@ -23,7 +23,7 @@ public class GreaterThan implements Condition{
         this.replacement = replacement;
     }
     @Override
-    public Boolean execute() {
+    public Boolean evaluate() {
         if (replacement == Integer.MIN_VALUE){
             System.out.println("Variable does not have value assigned");
             return false;
@@ -34,7 +34,7 @@ public class GreaterThan implements Condition{
 
     @Override
     public void print() {
-        System.out.println("Condition:{ " + "Type: GreaterThan, " + "variable: " + this.variable + "Value: " + this.value + "variable: " + this.value + "}");
+        System.out.println("Condition:{ " + "Type: GreaterThan, " + "variable: " + this.variable + ", Value: " + this.value + ", variable: " + this.value + "}");
 
     }
 }

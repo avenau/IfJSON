@@ -19,10 +19,10 @@ public class IfCondition {
     }
 
     public boolean evaluate() {
-        return condition.execute();
+        return condition.evaluate();
     }
     public void print(){
-        System.out.println("====== Printing IfConditionDTO ============");
+        System.out.println("====== Printing IfCondition ============");
         this.condition.print();
         System.out.println("====== ======================= ============");
     }

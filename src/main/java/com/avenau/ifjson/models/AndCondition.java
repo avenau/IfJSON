@@ -14,8 +14,8 @@ public class AndCondition implements Condition{
 
     }
     @Override
-    public Boolean execute() {
-        return (left.execute() && right.execute());
+    public Boolean evaluate() {
+        return (left.evaluate() && right.evaluate());
     }
 
     @Override
