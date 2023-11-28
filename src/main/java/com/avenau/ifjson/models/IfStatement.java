@@ -2,13 +2,13 @@ package com.avenau.ifjson.models;
 
 public class IfStatement {
 
+    private IfCondition ifCondition;
     private Statement trueStatement;
     private Statement falseStatement;
-    private Condition condition;
 
-    public IfStatement (Statement trueStatement, Statement falseStatement, Condition condition){
+    public IfStatement (Statement trueStatement, Statement falseStatement, IfCondition ifCondition){
         this.trueStatement = trueStatement;
         this.falseStatement = falseStatement;
-        this.condition = condition;
+        this.ifCondition = ifCondition;
     }
 }

@@ -1,33 +1,21 @@
 package com.avenau.ifjson.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ConditionDTO {
+import com.avenau.ifjson.models.AndCondition;
+import com.avenau.ifjson.models.GreaterThan;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-    @JsonProperty("variable")
-    private String variable;
-    @JsonProperty("value")
-    private String value;
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AndConditionDTO.class, name = "AND"),
+        @JsonSubTypes.Type(value = GreaterThanDTO.class, name = "GreaterThan")
+})
+public interface ConditionDTO {
 
-    public ConditionDTO () {
-        this.value = "";
-        this.variable = "";
-    }
+    public void print();
 
-    public ConditionDTO(String variable, String value){
-        this.value = value;
-        this.variable =variable;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getVariable() {
-        return variable;
-    }
-
-    public void print(){
-        System.out.println("Condition:{ " + "Variable: " + variable + ", Value: " + value + " }");
-    }
 }

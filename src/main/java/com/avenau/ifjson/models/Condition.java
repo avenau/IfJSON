@@ -1,17 +1,17 @@
 package com.avenau.ifjson.models;
 
-public class Condition {
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-    private String variable;
-    private String value;
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AndCondition.class, name = "AND"),
+        @JsonSubTypes.Type(value = GreaterThan.class, name = "GreaterThan")
+})
+public interface Condition {
 
-    public Condition(String variable, String value){
-        this.value = value;
-        this.variable =variable;
-    }
-
-    public boolean evaluate() {
-        return variable.equals(value);
-    }
-
+    public Boolean execute();
 }
