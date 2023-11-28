@@ -24,7 +24,7 @@ public class GreaterThanCondition implements Condition{
             if (!StringUtils.isNumeric(value) || !StringUtils.isNumeric(variableReplacement.get(variable))){
                 return (variableReplacement.get(variable).compareTo(value) > 0);
             } else if (StringUtils.isNumeric(value) && StringUtils.isNumeric(variableReplacement.get(variable))){
-                return Integer.parseInt(value) > Integer.parseInt(variableReplacement.get(variable));
+                return Integer.parseInt(variableReplacement.get(variable))  > Integer.parseInt(value);
             } else {
                 return (variableReplacement.get(variable).compareTo(value) > 0);
             }

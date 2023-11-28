@@ -67,6 +67,35 @@ public class Functions {
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         String json = mapper.writeValueAsString(wrapper);
 
+
+
+        return json;
+    }
+
+    @GetMapping("/test3")
+    @ResponseStatus(HttpStatus.OK)
+    public String test3() throws JsonProcessingException {
+        Statement trueStatement = new ResultStatement("True");
+        Statement falseStatement = new ResultStatement("False");
+        Condition greaterThan1 = new GreaterThanCondition("A", "5");
+        Condition greaterThan2 = new GreaterThanCondition("B", "10");
+        Condition AndCond = new AndCondition(greaterThan1,greaterThan2);
+        IfConditionWrapper ifConditionWrapper = new IfConditionWrapper(AndCond);
+        IfStatement ifStatement = new IfStatement(trueStatement,falseStatement, ifConditionWrapper);
+        IfWrapper wrapper = new IfWrapper(ifStatement);
+       /* PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                .allowIfSubType("Condition.")
+                .build();*/
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //mapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String json = mapper.writeValueAsString(wrapper);
+        currentJson = wrapper;
+
+
         return json;
     }
 
@@ -122,10 +151,6 @@ public class Functions {
             return "{'Error': 'You have not loaded a JSON yet'}";
         }
 
-
-
-
-
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -136,7 +161,7 @@ public class Functions {
 
     @PostMapping("/evaluate")
     @ResponseStatus(HttpStatus.OK)
-    public String evaluate(@RequestBody String jsonString) throws JsonProcessingException {
+    public String evaluate(@RequestBody String jsonString) throws Exception {
 
         if (currentJson == null) {
             return "{'Error': 'You have not loaded a JSON yet'}";
@@ -147,13 +172,17 @@ public class Functions {
         HashMap<String,String> variables = new HashMap<String, String>();
 
         for (String key : input.keySet()){
-            //System.out.println(key + ": " + input.get(key));
             variables.put(key, String.valueOf(input.get(key)));
         }
-        
+        try {
+            String result = currentJson.getIfStatement().evaluate(variables);
+            return result;
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return "{Error: Type mismatch}";
+        }
 
-
-        return "Hi";
     }
 
 
