@@ -1,5 +1,6 @@
 package com.avenau.ifjson.controllers;
 
+import com.avenau.ifjson.dto.ModifyDTO;
 import com.avenau.ifjson.models.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -207,9 +208,73 @@ public class Functions {
         } catch(Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return "{Error: Type mismatch}";
+            return "{Error: " + e.getMessage() +" }";
         }
 
+    }
+
+    @PostMapping("/modify")
+    @ResponseStatus(HttpStatus.OK)
+    public String modify(@RequestBody String jsonString) throws Exception {
+        if (currentJson == null) {
+            return "{'Error': 'You have not loaded a JSON yet'}";
+        }
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        ModifyDTO modifyWrapper =  mapper.readValue(jsonString, ModifyDTO.class);
+        IfConditionWrapper oldCondition = modifyWrapper.getOldCondition();
+        IfConditionWrapper newCondition = modifyWrapper.getNewCondition();
+
+        String oldConditionJSON = mapper.writeValueAsString(oldCondition);
+        String newConditionJSON = mapper.writeValueAsString(newCondition);
+
+        System.out.println("PRINTING CONDITIONS===============================");
+        System.out.println(oldConditionJSON);
+        System.out.println("NEW    " + newConditionJSON);
+
+        String currentJSONString = mapper.writeValueAsString(currentJson);
+
+        String modifiedJSON = currentJSONString.replace(oldConditionJSON, newConditionJSON);
+
+        System.out.println("Finished Modifying");
+        IfWrapper modifiedIf = mapper.readValue(modifiedJSON, IfWrapper.class);
+        this.currentJson = modifiedIf;
+
+
+
+
+
+        return modifiedJSON;
+
+    }
+
+    @GetMapping("/test5")
+    @ResponseStatus(HttpStatus.OK)
+    public String test5() throws JsonProcessingException {
+
+
+
+        Condition equals = new EqualsCondition("a", "abc");
+        IfConditionWrapper ifConditionWrapper1 = new IfConditionWrapper(equals);
+
+        Statement trueStatement3 = new ResultStatement("True");
+        Statement falseStatement3 = new ResultStatement("False");
+        Condition greaterThan1 = new GreaterThanCondition("A", "5");
+        Condition greaterThan2 = new GreaterThanCondition("B", "10");
+        Condition AndCond3 = new AndCondition(greaterThan1,greaterThan2);
+        IfConditionWrapper ifConditionWrapper2 = new IfConditionWrapper(AndCond3);
+
+        ModifyDTO ModifyWrapper = new ModifyDTO(ifConditionWrapper1, ifConditionWrapper2);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String json = mapper.writeValueAsString(ModifyWrapper);
+
+        return json;
     }
 
 
