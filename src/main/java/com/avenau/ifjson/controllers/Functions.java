@@ -68,7 +68,7 @@ public class Functions {
         Example input:
         {
             "a": 5,
-            "b": abc
+            "b": "abc"
         }
      */
     @PostMapping("/evaluate")
